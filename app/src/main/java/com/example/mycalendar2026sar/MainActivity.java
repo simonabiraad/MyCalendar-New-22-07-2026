@@ -1346,6 +1346,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchSecureBox(boolean openNewNote) {
+        boolean passwordDisabled = securityPrefs.getBoolean("password_disabled", false);
+        if (passwordDisabled) {
+            Intent intent = new Intent(this, SecureBoxActivity.class);
+            if (openNewNote) intent.putExtra("action", "new_note");
+            startActivity(intent);
+            return;
+        }
+
         String customPass = securityPrefs.getString("custom_password", null);
 
         if (customPass != null) {
@@ -1407,18 +1415,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showChangePasswordDialog() {
-        String[] options = {"Use Phone Lock Screen (Fingerprint/PIN)", "Set a New Custom Password"};
+        String[] options = {"Use Phone Lock Screen (Fingerprint/PIN)", "Set a New Custom Password", "Disable Password"};
         new AlertDialog.Builder(this)
                 .setTitle("Secure Box Access Type")
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
-                        securityPrefs.edit().remove("custom_password").apply();
+                        securityPrefs.edit().remove("custom_password")
+                                .putBoolean("password_disabled", false).apply();
                         Toast.makeText(this, "Secure Box now synchronized with phone lock.", Toast.LENGTH_SHORT).show();
-                    } else {
+                    } else if (which == 1) {
                         showSetCustomPasswordDialog();
+                    } else if (which == 2) {
+                        confirmDisablePassword();
                     }
                 })
                 .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void confirmDisablePassword() {
+        new AlertDialog.Builder(this)
+                .setTitle("Disable Password")
+                .setMessage("Are you sure you want to disable the password entirely? Anyone will be able to open the Secure Box.")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    securityPrefs.edit().remove("custom_password")
+                            .putBoolean("password_disabled", true).apply();
+                    Toast.makeText(this, "Password disabled. Access is now unprotected.", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("No", null)
                 .show();
     }
 
@@ -1434,7 +1458,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Save", (dialog, which) -> {
             String newPass = input.getText().toString().trim();
             if (!newPass.isEmpty()) {
-                securityPrefs.edit().putString("custom_password", newPass).apply();
+                securityPrefs.edit().putString("custom_password", newPass)
+                        .putBoolean("password_disabled", false).apply();
                 Toast.makeText(this, "Custom password saved!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
