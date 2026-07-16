@@ -79,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout archiveHistoryContainer;
     private LinearLayout deletedHistoryContainer;
     private ScrollView mainScrollView;
+    
+    // Selection Mode
+    private boolean isSelectionMode = false;
+    private final java.util.HashSet<String> selectedNotes = new java.util.HashSet<>();
+    private LinearLayout selectionBar;
+    private TextView selectionCountText;
 
     private Calendar calendar;
     private Calendar selectedDate;
@@ -125,6 +131,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    private final ActivityResultLauncher<Intent> exportLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    android.net.Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        performExport(uri);
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> importLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    android.net.Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        performImport(uri);
+                    }
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
         archiveHistoryContainer = findViewById(R.id.archiveHistoryContainer);
         deletedHistoryContainer = findViewById(R.id.deletedHistoryContainer);
         mainScrollView = findViewById(R.id.mainScrollView);
+
+        initSelectionBar();
 
         Button saveNoteButton = findViewById(R.id.saveNoteButton);
         ImageButton prevMonth = findViewById(R.id.prevMonth);
@@ -235,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
             popup.getMenu().add("Notification Settings");
             popup.getMenu().add("Change Colors");
             popup.getMenu().add("Change Font");
+            popup.getMenu().add("Backup Data");
             popup.getMenu().add("Print");
             popup.getMenu().add("About");
             popup.getMenu().add("Exit");
@@ -259,6 +288,8 @@ public class MainActivity extends AppCompatActivity {
                     showChangeColorsDialog();
                 } else if (title.equals("Change Font")) {
                     showFontDialog();
+                } else if (title.equals("Backup Data")) {
+                    showBackupDataDialog();
                 } else if (title.equals("Print")) {
                     showPrintDialog();
                 } else if (title.equals("About")) {
@@ -353,7 +384,223 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initSelectionBar() {
+        selectionBar = findViewById(R.id.selectionBar);
+        selectionCountText = findViewById(R.id.selectionCountText);
+        
+        findViewById(R.id.cancelSelectionBtn).setOnClickListener(v -> exitSelectionMode());
+        
+        findViewById(R.id.deleteSelectedBtn).setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Selected")
+                    .setMessage("Move selected notes to trash?")
+                    .setPositiveButton("Yes", (dialog, which) -> deleteSelectedNotes())
+                    .setNegativeButton("No", null)
+                    .show();
+        });
+        
+        findViewById(R.id.archiveSelectedBtn).setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Archive Selected")
+                    .setMessage("Move selected notes to archive?")
+                    .setPositiveButton("Yes", (dialog, which) -> archiveSelectedNotes())
+                    .setNegativeButton("No", null)
+                    .show();
+        });
+    }
+
+    private void exitSelectionMode() {
+        isSelectionMode = false;
+        selectedNotes.clear();
+        selectionBar.setVisibility(View.GONE);
+        loadRemarksForSelectedDate();
+        updateRemarkHistory();
+    }
+
+    private void toggleSelection(String noteId) {
+        if (selectedNotes.contains(noteId)) {
+            selectedNotes.remove(noteId);
+        } else {
+            selectedNotes.add(noteId);
+        }
+        
+        if (selectedNotes.isEmpty()) {
+            exitSelectionMode();
+        } else {
+            selectionCountText.setText(selectedNotes.size() + " selected");
+            loadRemarksForSelectedDate();
+            updateRemarkHistory();
+        }
+    }
+
+    private void deleteSelectedNotes() {
+        for (String id : selectedNotes) {
+            String[] parts = id.split(":");
+            String prefsName = parts[0];
+            String dateKey = parts[1];
+            int index = Integer.parseInt(parts[2]);
+            
+            SharedPreferences prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE);
+            // We need to be careful with indices as they change when we remove items.
+            // Better to group by prefs and dateKey, then remove from largest index to smallest.
+        }
+        // Simplified batch delete logic:
+        processBatchAction("delete");
+        exitSelectionMode();
+    }
+
+    private void archiveSelectedNotes() {
+        processBatchAction("archive");
+        exitSelectionMode();
+    }
+
+    private void processBatchAction(String action) {
+        // Group by prefs and date
+        java.util.Map<String, java.util.Map<String, java.util.List<Integer>>> grouped = new java.util.HashMap<>();
+        for (String id : selectedNotes) {
+            String[] parts = id.split(":");
+            String prefsName = parts[0];
+            String dateKey = parts[1];
+            int index = Integer.parseInt(parts[2]);
+            
+            grouped.computeIfAbsent(prefsName, k -> new java.util.HashMap<>())
+                   .computeIfAbsent(dateKey, k -> new java.util.ArrayList<>())
+                   .add(index);
+        }
+
+        for (Map.Entry<String, java.util.Map<String, java.util.List<Integer>>> prefsEntry : grouped.entrySet()) {
+            SharedPreferences prefs = getSharedPreferences(prefsEntry.getKey(), Context.MODE_PRIVATE);
+            for (Map.Entry<String, java.util.List<Integer>> dateEntry : prefsEntry.getValue().entrySet()) {
+                String dateKey = dateEntry.getKey();
+                java.util.List<Integer> indices = dateEntry.getValue();
+                indices.sort(java.util.Collections.reverseOrder());
+                
+                String currentText = prefs.getString(dateKey, "");
+                if (currentText.isEmpty()) continue;
+                java.util.List<String> list = new java.util.ArrayList<>(java.util.Arrays.asList(currentText.split("\n")));
+                
+                for (int index : indices) {
+                    if (index >= 0 && index < list.size()) {
+                        String note = list.remove(index);
+                        if (action.equals("delete")) {
+                            if (!prefsEntry.getKey().equals("DeletedNotes")) {
+                                String currentDeleted = deletedPreferences.getString(dateKey, "");
+                                String updatedDeleted = currentDeleted.isEmpty() ? note : currentDeleted + "\n" + note;
+                                deletedPreferences.edit().putString(dateKey, updatedDeleted).apply();
+                            }
+                        } else if (action.equals("archive")) {
+                            if (!prefsEntry.getKey().equals("ArchivedNotes")) {
+                                String currentArchived = archivePreferences.getString(dateKey, "");
+                                String updatedArchived = currentArchived.isEmpty() ? note : currentArchived + "\n" + note;
+                                archivePreferences.edit().putString(dateKey, updatedArchived).apply();
+                            }
+                        }
+                    }
+                }
+                
+                if (list.isEmpty()) prefs.edit().remove(dateKey).apply();
+                else prefs.edit().putString(dateKey, String.join("\n", list)).apply();
+            }
+        }
+        Toast.makeText(this, "Action completed", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getPrefsName(SharedPreferences prefs) {
+        if (prefs == sharedPreferences) return "CalendarNotes";
+        if (prefs == archivePreferences) return "ArchivedNotes";
+        if (prefs == deletedPreferences) return "DeletedNotes";
+        return "";
+    }
+
+    private void showBackupDataDialog() {
+        String[] options = {"Export Data (Save Backup)", "Import Data (Restore Backup)"};
+        new AlertDialog.Builder(this)
+                .setTitle("Backup & Restore")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) startExport();
+                    else startImport();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void startExport() {
+
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/json");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmm", Locale.getDefault()).format(new Date());
+        intent.putExtra(Intent.EXTRA_TITLE, "SAR_Calendar_Backup_" + timeStamp + ".json");
+        exportLauncher.launch(intent);
+    }
+
+    private void performExport(android.net.Uri uri) {
+        try {
+            String json = BackupManager.createBackupJson(this);
+            if (json == null) {
+                Toast.makeText(this, "Export creation failed", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            android.os.ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
+            if (pfd != null) {
+                java.io.FileOutputStream fileOutputStream = new java.io.FileOutputStream(pfd.getFileDescriptor());
+                fileOutputStream.write(json.getBytes());
+                fileOutputStream.close();
+                pfd.close();
+                Toast.makeText(this, "Data exported successfully!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Export failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startImport() {
+        new AlertDialog.Builder(this)
+                .setTitle("Import Data")
+                .setMessage("Warning: Importing data will overwrite all current notes and settings. Continue?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/json");
+                    importLauncher.launch(intent);
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void performImport(android.net.Uri uri) {
+        try {
+            java.io.InputStream inputStream = getContentResolver().openInputStream(uri);
+            if (inputStream == null) return;
+            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            inputStream.close();
+
+            boolean success = BackupManager.restoreBackupJson(this, stringBuilder.toString());
+            if (success) {
+                Toast.makeText(this, "Data imported successfully! Restarting app...", Toast.LENGTH_LONG).show();
+                // Restart activity to apply changes
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    Runtime.getRuntime().exit(0);
+                }, 2000);
+            } else {
+                Toast.makeText(this, "Import failed: Invalid backup file", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Import failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void updateCalendar() {
+
+
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         monthYearText.setText(sdf.format(calendar.getTime()));
 
@@ -407,13 +654,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addRemarkView(String remarkText, int index, SharedPreferences sourcePrefs) {
+        String noteId = getPrefsName(sourcePrefs) + ":" + currentDateKey + ":" + index;
+        
         LinearLayout horizontalLayout = new LinearLayout(this);
         horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
         horizontalLayout.setGravity(Gravity.CENTER_VERTICAL);
         horizontalLayout.setPadding(0, 4, 0, 4);
+        
+        if (selectedNotes.contains(noteId)) {
+            horizontalLayout.setBackgroundColor(Color.parseColor("#6633B5E5"));
+        }
 
         TextView textView = createRemarkTextView(remarkText, index, sourcePrefs);
         horizontalLayout.addView(textView);
+
+        textView.setOnLongClickListener(v -> {
+            if (!isSelectionMode) {
+                isSelectionMode = true;
+                selectionBar.setVisibility(View.VISIBLE);
+                toggleSelection(noteId);
+                return true;
+            }
+            return false;
+        });
+
+        textView.setOnClickListener(v -> {
+            if (isSelectionMode) {
+                toggleSelection(noteId);
+            } else {
+                toggleNoteFinished(index, sourcePrefs);
+            }
+        });
 
         int iconSize = (int) (23 * getResources().getDisplayMetrics().density);
         LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(iconSize, iconSize);
@@ -627,7 +898,7 @@ public class MainActivity extends AppCompatActivity {
         }
         textView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        textView.setOnClickListener(v -> toggleNoteFinished(index, sourcePrefs));
+        // Click listeners moved to addRemarkView to handle selection mode properly
 
         textView.setOnLongClickListener(v -> {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -1246,10 +1517,18 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < notes.length; i++) {
                 final int index = i;
                 final String noteText = notes[i];
+                final String currentLoopDateKey = dateKey;
+                String noteId = getPrefsName(prefs) + ":" + currentLoopDateKey + ":" + index;
+
                 LinearLayout noteLayout = new LinearLayout(this);
                 noteLayout.setOrientation(LinearLayout.HORIZONTAL);
                 noteLayout.setGravity(Gravity.CENTER_VERTICAL);
                 noteLayout.setPadding(32, 4, 0, 4);
+
+                if (selectedNotes.contains(noteId)) {
+                    noteLayout.setBackgroundColor(Color.parseColor("#6633B5E5"));
+                }
+
                 TextView tv = new TextView(this);
                 tv.setText(noteText);
                 applyFontSettings(tv, 14);
@@ -1262,6 +1541,27 @@ public class MainActivity extends AppCompatActivity {
                 }
                 tv.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
                 noteLayout.addView(tv);
+
+                tv.setOnClickListener(v -> {
+                    if (isSelectionMode) {
+                        toggleSelection(noteId);
+                    }
+                });
+
+                tv.setOnLongClickListener(v -> {
+                    if (!isSelectionMode) {
+                        isSelectionMode = true;
+                        selectionBar.setVisibility(View.VISIBLE);
+                        toggleSelection(noteId);
+                        return true;
+                    }
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("SAR Note", noteText);
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(this, "Note copied", Toast.LENGTH_SHORT).show();
+                    return true;
+                });
+
                 int iconSize = (int) (28 * getResources().getDisplayMetrics().density);
                 ImageButton shareBtn = new ImageButton(this);
                 shareBtn.setImageResource(android.R.drawable.ic_menu_share);
@@ -1270,6 +1570,10 @@ public class MainActivity extends AppCompatActivity {
                 shareBtn.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 noteLayout.addView(shareBtn, new LinearLayout.LayoutParams(iconSize, iconSize));
                 shareBtn.setOnClickListener(v -> {
+                    if (isSelectionMode) {
+                        toggleSelection(noteId);
+                        return;
+                    }
                     String[] options = {"Share as Text", "Share as .ics File"};
                     new AlertDialog.Builder(this).setTitle("Share Note").setItems(options, (dialog, which) -> {
                         if (which == 0) {
@@ -1279,7 +1583,7 @@ public class MainActivity extends AppCompatActivity {
                             sendIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
                             sendIntent.setType("text/plain");
                             startActivity(Intent.createChooser(sendIntent, "Share Note via"));
-                        } else shareNoteAsIcs(noteText, dateKey);
+                        } else shareNoteAsIcs(noteText, currentLoopDateKey);
                     }).show();
                 });
                 if (container == archiveHistoryContainer || container == deletedHistoryContainer) {
@@ -1289,23 +1593,25 @@ public class MainActivity extends AppCompatActivity {
                     restoreBtn.setPadding(4, 4, 4, 4);
                     restoreBtn.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     noteLayout.addView(restoreBtn, new LinearLayout.LayoutParams(iconSize, iconSize));
-                    restoreBtn.setOnClickListener(v -> restoreSingleNote(dateKey, index, prefs));
+                    restoreBtn.setOnClickListener(v -> {
+                        if (isSelectionMode) toggleSelection(noteId);
+                        else restoreSingleNote(currentLoopDateKey, index, prefs);
+                    });
                     ImageButton delBtn = new ImageButton(this);
                     delBtn.setImageResource(android.R.drawable.ic_menu_delete);
                     delBtn.setBackgroundColor(Color.TRANSPARENT);
                     delBtn.setPadding(4, 4, 4, 4);
                     delBtn.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     noteLayout.addView(delBtn, new LinearLayout.LayoutParams(iconSize, iconSize));
-                    if (container == archiveHistoryContainer) delBtn.setOnClickListener(v -> deleteSingleNote(dateKey, index, prefs));
-                    else if (container == deletedHistoryContainer) delBtn.setOnClickListener(v -> deleteSingleNotePermanently(dateKey, index, prefs));
+                    if (container == archiveHistoryContainer) delBtn.setOnClickListener(v -> {
+                        if (isSelectionMode) toggleSelection(noteId);
+                        else deleteSingleNote(currentLoopDateKey, index, prefs);
+                    });
+                    else if (container == deletedHistoryContainer) delBtn.setOnClickListener(v -> {
+                        if (isSelectionMode) toggleSelection(noteId);
+                        else deleteSingleNotePermanently(currentLoopDateKey, index, prefs);
+                    });
                 }
-                tv.setOnLongClickListener(v -> {
-                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    android.content.ClipData clip = android.content.ClipData.newPlainText("SAR Note", noteText);
-                    clipboard.setPrimaryClip(clip);
-                    Toast.makeText(this, "Note copied", Toast.LENGTH_SHORT).show();
-                    return true;
-                });
                 container.addView(noteLayout);
             }
         }

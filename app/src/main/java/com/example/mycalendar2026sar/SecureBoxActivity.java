@@ -44,6 +44,12 @@ public class SecureBoxActivity extends AppCompatActivity {
     private LinearLayout buttonContainer;
     private SharedPreferences securePrefs, colorPrefs, fontPrefs, categoryPrefs;
     
+    // Selection Mode
+    private boolean isSelectionMode = false;
+    private final java.util.HashSet<Integer> selectedIndices = new java.util.HashSet<>();
+    private LinearLayout selectionBar;
+    private TextView selectionCountText;
+
     private String activeCategoryKey = "";
     private int activeCategoryColor = 0;
 
@@ -71,6 +77,7 @@ public class SecureBoxActivity extends AppCompatActivity {
         loadCategories();
         refreshColors();
         setupAutoScroll();
+        initSelectionBar();
 
         String action = getIntent().getStringExtra("action");
         if ("new_note".equals(action)) {
@@ -80,7 +87,124 @@ public class SecureBoxActivity extends AppCompatActivity {
         }
     }
 
+    private void initSelectionBar() {
+        selectionBar = findViewById(R.id.selectionBar);
+        selectionCountText = findViewById(R.id.selectionCountText);
+        
+        findViewById(R.id.cancelSelectionBtn).setOnClickListener(v -> exitSelectionMode());
+        
+        findViewById(R.id.deleteSelectedBtn).setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Selected")
+                    .setMessage("Permanently delete selected sticky notes?")
+                    .setPositiveButton("Yes", (dialog, which) -> deleteSelectedNotes())
+                    .setNegativeButton("No", null)
+                    .show();
+        });
+        
+        findViewById(R.id.moveSelectedBtn).setOnClickListener(v -> showMoveSelectedDialog());
+    }
+
+    private void exitSelectionMode() {
+        isSelectionMode = false;
+        selectedIndices.clear();
+        selectionBar.setVisibility(View.GONE);
+        loadNotes(activeCategoryKey);
+    }
+
+    private void toggleSelection(int index) {
+        if (selectedIndices.contains(index)) {
+            selectedIndices.remove(index);
+        } else {
+            selectedIndices.add(index);
+        }
+        
+        if (selectedIndices.isEmpty()) {
+            exitSelectionMode();
+        } else {
+            selectionCountText.setText(selectedIndices.size() + " selected");
+            loadNotes(activeCategoryKey);
+        }
+    }
+
+    private void deleteSelectedNotes() {
+        String notesStr = securePrefs.getString(activeCategoryKey, "");
+        if (notesStr.isEmpty()) return;
+        java.util.List<String> notesList = new java.util.ArrayList<>(java.util.Arrays.asList(notesStr.split(SEPARATOR)));
+        
+        java.util.List<Integer> sortedIndices = new java.util.ArrayList<>(selectedIndices);
+        sortedIndices.sort(java.util.Collections.reverseOrder());
+        
+        for (int index : sortedIndices) {
+            if (index >= 0 && index < notesList.size()) {
+                notesList.remove(index);
+            }
+        }
+        
+        if (notesList.isEmpty()) securePrefs.edit().remove(activeCategoryKey).apply();
+        else securePrefs.edit().putString(activeCategoryKey, String.join(SEPARATOR, notesList)).apply();
+        
+        Toast.makeText(this, "Deleted selected notes", Toast.LENGTH_SHORT).show();
+        exitSelectionMode();
+    }
+
+    private void showMoveSelectedDialog() {
+        String orderStr = categoryPrefs.getString("cats_order", "");
+        if (orderStr.isEmpty()) return;
+        String[] keys = orderStr.split(",");
+        java.util.List<String> names = new java.util.ArrayList<>();
+        java.util.List<String> targetKeys = new java.util.ArrayList<>();
+        
+        for (String k : keys) {
+            if (!k.equals(activeCategoryKey)) {
+                names.add(categoryPrefs.getString(k, "Unknown"));
+                targetKeys.add(k);
+            }
+        }
+        
+        if (names.isEmpty()) {
+            Toast.makeText(this, "No other categories to move to", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Move to Category")
+                .setItems(names.toArray(new String[0]), (dialog, which) -> {
+                    moveSelectedToCategory(targetKeys.get(which));
+                })
+                .show();
+    }
+
+    private void moveSelectedToCategory(String targetKey) {
+        String notesStr = securePrefs.getString(activeCategoryKey, "");
+        if (notesStr.isEmpty()) return;
+        java.util.List<String> notesList = new java.util.ArrayList<>(java.util.Arrays.asList(notesStr.split(SEPARATOR)));
+        
+        String targetNotesStr = securePrefs.getString(targetKey, "");
+        java.util.List<String> targetList = new java.util.ArrayList<>();
+        if (!targetNotesStr.isEmpty()) targetList.addAll(java.util.Arrays.asList(targetNotesStr.split(SEPARATOR)));
+
+        java.util.List<Integer> sortedIndices = new java.util.ArrayList<>(selectedIndices);
+        sortedIndices.sort(java.util.Collections.reverseOrder());
+        
+        for (int index : sortedIndices) {
+            if (index >= 0 && index < notesList.size()) {
+                String note = notesList.remove(index);
+                targetList.add(note);
+            }
+        }
+        
+        if (notesList.isEmpty()) securePrefs.edit().remove(activeCategoryKey).apply();
+        else securePrefs.edit().putString(activeCategoryKey, String.join(SEPARATOR, notesList)).apply();
+        
+        securePrefs.edit().putString(targetKey, String.join(SEPARATOR, targetList)).apply();
+        
+        Toast.makeText(this, "Moved to " + categoryPrefs.getString(targetKey, ""), Toast.LENGTH_SHORT).show();
+        exitSelectionMode();
+    }
+
     private void initViews() {
+
         notesSection = findViewById(R.id.notesSection);
         notesContainer = findViewById(R.id.notesContainer);
         noteTitleInput = findViewById(R.id.noteTitleInput);
@@ -371,6 +495,12 @@ public class SecureBoxActivity extends AppCompatActivity {
                 applyFontSettings(contentTv, 12);
 
                 card.setCardBackgroundColor(activeCategoryColor);
+                if (selectedIndices.contains(index)) {
+                    card.setStrokeColor(Color.WHITE);
+                    card.setStrokeWidth(8);
+                } else {
+                    card.setStrokeWidth(0);
+                }
 
                 View moveLeft = noteView.findViewById(R.id.moveLeftBtn);
                 View moveRight = noteView.findViewById(R.id.moveRightBtn);
@@ -378,12 +508,30 @@ public class SecureBoxActivity extends AppCompatActivity {
                 moveLeft.setVisibility(i > 0 ? View.VISIBLE : View.INVISIBLE);
                 moveRight.setVisibility(i < count - 1 ? View.VISIBLE : View.INVISIBLE);
 
-                moveLeft.setOnClickListener(v -> moveNote(key, index, index - 1));
-                moveRight.setOnClickListener(v -> moveNote(key, index, index + 1));
+                moveLeft.setOnClickListener(v -> {
+                    if (isSelectionMode) toggleSelection(index);
+                    else moveNote(key, index, index - 1);
+                });
+                moveRight.setOnClickListener(v -> {
+                    if (isSelectionMode) toggleSelection(index);
+                    else moveNote(key, index, index + 1);
+                });
 
-                noteView.setOnClickListener(v -> showEditFullPage(key, index, finalTitle, finalContent, notesContainer));
+                noteView.setOnClickListener(v -> {
+                    if (isSelectionMode) {
+                        toggleSelection(index);
+                    } else {
+                        showEditFullPage(key, index, finalTitle, finalContent, notesContainer);
+                    }
+                });
 
                 noteView.setOnLongClickListener(v -> {
+                    if (!isSelectionMode) {
+                        isSelectionMode = true;
+                        selectionBar.setVisibility(View.VISIBLE);
+                        toggleSelection(index);
+                        return true;
+                    }
                     new AlertDialog.Builder(this)
                             .setTitle("Delete Note")
                             .setMessage("Are you sure you want to delete this note?")
