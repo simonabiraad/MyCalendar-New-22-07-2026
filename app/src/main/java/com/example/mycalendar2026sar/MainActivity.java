@@ -2,6 +2,8 @@ package com.example.mycalendar2026sar;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.appwidget.AppWidgetManager;
@@ -12,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -308,6 +311,11 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.secureBoxButton).setOnClickListener(v -> launchSecureBox(false));
 
+        findViewById(R.id.expensesButton).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ExpensesActivity.class);
+            startActivity(intent);
+        });
+
         findViewById(R.id.notificationSettingsButton).setOnClickListener(v -> {
             Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
             intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
@@ -329,6 +337,8 @@ public class MainActivity extends AppCompatActivity {
             calendar.add(Calendar.MONTH, 1);
             updateCalendar();
         });
+
+        createNotificationChannel();
     }
 
     @Override
@@ -1984,6 +1994,11 @@ public class MainActivity extends AppCompatActivity {
             secureBtn.setBackgroundTintList(ColorStateList.valueOf(mainTheme));
             applyFontSettings(secureBtn, 11);
         }
+        Button expBtn = findViewById(R.id.expensesButton);
+        if (expBtn != null) {
+            expBtn.setBackgroundTintList(ColorStateList.valueOf(mainTheme));
+            applyFontSettings(expBtn, 11);
+        }
         Button notifyBtn = findViewById(R.id.notificationSettingsButton);
         if (notifyBtn != null) {
             notifyBtn.setBackgroundTintList(ColorStateList.valueOf(mainTheme));
@@ -2083,6 +2098,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         webView.loadDataWithBaseURL(null, htmlContent, "text/HTML", "UTF-8", null);
+    }
+
+    private void createNotificationChannel() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "calendar_reminder_channel";
+
+        NotificationChannel channel = new NotificationChannel(channelId, "Calendar Reminders", NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription("Reminders for your calendar notes");
+        channel.enableVibration(true);
+        channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null);
+        
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     private class CalendarAdapter extends BaseAdapter {

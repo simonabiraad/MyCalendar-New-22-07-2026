@@ -29,6 +29,22 @@
             android:name=".SecureBoxActivity"
             android:exported="false"
             android:theme="@style/Theme.MyCalendar2026SAR" />
+        <activity
+            android:name=".ExpensesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyCalendar2026SAR" />
+        <activity
+            android:name=".DailyExpensesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyCalendar2026SAR" />
+        <activity
+            android:name=".WeeklyExpensesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyCalendar2026SAR" />
+        <activity
+            android:name=".MonthlyExpensesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyCalendar2026SAR" />
         <receiver android:name=".ReminderReceiver" android:exported="false" />
 
         <receiver
