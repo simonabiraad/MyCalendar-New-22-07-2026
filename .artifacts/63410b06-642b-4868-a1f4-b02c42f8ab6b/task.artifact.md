@@ -1,5 +1,5 @@
-# Task: Fix Notification Settings Button
+# Task: Fix Scrolling in Sticky Note Editor
 
-- `[x]` Implement `createNotificationChannel` in `MainActivity.java`.
-- `[x]` Call `createNotificationChannel` in `onCreate`.
-- `[x]` Verify the notification settings open correctly and show the channel.
+- `[x]` Update `showEditFullPage` in `SecureBoxActivity.java` to use a `ScrollView`.
+- `[x]` Adjust `contentEdit` layout parameters for better scrolling integration.
+- `[x]` Verify scrolling behavior in the edit dialog.

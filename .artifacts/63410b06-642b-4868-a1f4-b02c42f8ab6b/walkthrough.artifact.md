@@ -1,25 +1,53 @@
-# Walkthrough - SAR Calendar Improvements
+# Walkthrough - SAR Calendar Updates
 
-I have implemented several updates to improve the app's functionality and user experience.
+## 1. Expenses Navigation
+I have added "Daily", "Weekly", and "Monthly" navigation to the Expenses screen.
 
-## Changes Made
+### Changes Made
+- **Layout**: Added a horizontal button bar at the top of `activity_expenses.xml` with buttons for Daily, Weekly, and Monthly.
+- **Navigation**: Updated `ExpensesActivity.java` to launch the corresponding new screens when these buttons are clicked.
+- **New Expense Screens**: Created `DailyExpensesActivity`, `WeeklyExpensesActivity`, and `MonthlyExpensesActivity` all with solid black backgrounds.
+- **Configuration**: Added necessary string resources and registered activities in the Manifest.
 
-### 1. Fix Notification Settings Button
-Previously, clicking the notification bell didn't show the "Calendar Reminders" category in settings unless a notification had already been triggered.
-- **Immediate Channel Creation**: Added logic to `MainActivity.java` to create and register the "Calendar Reminders" notification channel as soon as the app starts.
-- **Enhanced Settings Access**: This ensures that clicking the bell icon now immediately allows you to customize sounds, vibrations, and ringtones for the app's reminders.
+---
 
-### 2. Expenses Navigation
-- **Daily, Weekly, Monthly Tabs**: Added three buttons to the top of the Expenses screen.
-- **New Screens**: Created dedicated screens for Daily, Weekly, and Monthly expenses, all featuring a sleek black background as requested.
+## 2. Sticky Note Interaction Update
+I have updated the interaction behavior for sticky notes in the Secure Box.
 
-### 3. Archive Control
-- **Disabled Automatic Archiving**: Notes for past days no longer move to the archive folder automatically when you open the app.
-- **Manual Archive Button**: You now have full control to move all past notes at once using the manual archive button in the history section.
+### Changes Made
+- **Single Click**: Tap a sticky note to open the editor ("select to write").
+- **Long Click Menu**: Press and hold a sticky note to see a new options menu:
+    - **Copy**: Copies the note's title and content to the system clipboard.
+    - **Paste**: Appends text from the system clipboard to the existing note content.
+    - **Delete**: Quickly delete the individual note after confirmation.
+    - **Selection Mode**: Explicitly enter selection mode for batch actions.
+- **Clipboard Integration**: Implemented logic using `ClipboardManager` and `ClipData`.
+
+---
+
+## 3. Fix Scrolling in Sticky Note Editor
+I have fixed an issue where scrolling the sticky note editor was difficult when touching the background.
+
+### Changes Made
+- **SecureBoxActivity.java**: Wrapped the entire editor layout in a `ScrollView`.
+- **Improved Scrolling**: Enabled `fillViewport="true"` and adjusted layout weights so that you can scroll the entire page by touching any part of the screen, including the empty background space.
+- **Consistency**: Set `setNestedScrollingEnabled(false)` on the main text field to ensure smooth, page-wide scrolling.
+
+---
+
+## 4. Fix Notification Settings Button
+Previously, the notification settings were not fully accessible until a notification had been triggered.
+
+### Changes Made
+- **MainActivity.java**: Added logic to create the "Calendar Reminders" notification channel immediately when the app starts. This ensures that the notification settings (including ringtone selection) are always available via the bell icon 🔔.
+
+---
 
 ## Verification Results
 
 ### Manual Verification Recommended
-1. **Notification Settings**: Click the bell icon in the top header. Verify that the "Calendar Reminders" category appears and allows you to change the notification sound/ringtone.
-2. **Expenses**: Open the Expenses screen and verify the Daily, Weekly, and Monthly buttons open their respective black screens.
-3. **Archiving**: Verify that notes from yesterday stay in your main list until you press the manual archive button.
+1. **Expenses**: Verify that Daily, Weekly, and Monthly buttons open black screens.
+2. **Sticky Notes**:
+    - Tap a note to edit. Verify you can scroll the entire page by touching the background.
+    - Long-press a note to test **Copy**, **Paste**, and **Delete**.
+3. **Notifications**: Click the bell icon and verify you can see the "Calendar Reminders" category to change the ringtone.

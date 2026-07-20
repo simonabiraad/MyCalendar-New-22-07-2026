@@ -561,12 +561,15 @@ public class SecureBoxActivity extends AppCompatActivity {
         android.app.Dialog dialog = new android.app.Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
 
         int bgColor = activeCategoryColor;
-        int textColor = (bgColor == getColor(R.color.unmellow_yellow)) ? Color.BLACK : Color.BLACK; 
-        // Actually the current logic uses Black text for sticky notes, so let's stick with that.
+        int textColor = Color.BLACK;
+
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        scrollView.setFillViewport(true);
+        scrollView.setBackgroundColor(bgColor);
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setBackgroundColor(bgColor);
         layout.setPadding(32, 32, 32, 32);
 
         EditText titleEdit = new EditText(this);
@@ -583,6 +586,7 @@ public class SecureBoxActivity extends AppCompatActivity {
         applyFontSettings(contentEdit, 18);
         contentEdit.setGravity(android.view.Gravity.START | android.view.Gravity.TOP);
         contentEdit.setBackground(null);
+        contentEdit.setNestedScrollingEnabled(false);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
         contentEdit.setLayoutParams(lp);
         layout.addView(contentEdit);
@@ -590,6 +594,7 @@ public class SecureBoxActivity extends AppCompatActivity {
         LinearLayout btnLayout = new LinearLayout(this);
         btnLayout.setOrientation(LinearLayout.HORIZONTAL);
         btnLayout.setGravity(android.view.Gravity.END);
+        btnLayout.setPadding(0, 16, 0, 0);
 
         Button cancel = new Button(this);
         cancel.setText("Cancel");
@@ -622,7 +627,8 @@ public class SecureBoxActivity extends AppCompatActivity {
         btnLayout.addView(save);
 
         layout.addView(btnLayout);
-        dialog.setContentView(layout);
+        scrollView.addView(layout);
+        dialog.setContentView(scrollView);
         dialog.show();
     }
 
