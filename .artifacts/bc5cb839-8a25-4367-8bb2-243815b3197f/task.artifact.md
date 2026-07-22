@@ -1,0 +1,4 @@
+- [ ] Add `search_expenses_hint` string to `strings.xml`
+- [ ] Add `SearchView` to `activity_expenses.xml`
+- [ ] Initialize `SearchView` in `ExpensesActivity.java`
+- [ ] Verify build and layout
