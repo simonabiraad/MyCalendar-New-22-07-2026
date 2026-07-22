@@ -32,6 +32,40 @@ public class ExpensesActivity extends AppCompatActivity {
             drawerLayout.openDrawer(GravityCompat.START);
         });
 
+        findViewById(R.id.topExpensesButton).setOnClickListener(v -> {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.add_accounts_title)
+                    .setMessage("Manage your accounts here.")
+                    .setPositiveButton("OK", null)
+                    .show();
+        });
+
+        findViewById(R.id.expensesOverflowButton).setOnClickListener(v -> {
+            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(this, v);
+            popup.getMenuInflater().inflate(R.menu.menu_expenses_overflow, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                String title = String.valueOf(item.getTitle());
+                if (id == R.id.action_date_asc || id == R.id.action_date_desc) {
+                    item.setChecked(true);
+                }
+                Toast.makeText(this, title + " selected", Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            popup.show();
+        });
+
+        findViewById(R.id.expensesExportButton).setOnClickListener(v -> {
+            androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(this, v);
+            popup.getMenuInflater().inflate(R.menu.menu_expenses_export, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                String title = String.valueOf(item.getTitle());
+                Toast.makeText(this, "Exporting to " + title + "...", Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            popup.show();
+        });
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_remove_ads) {
@@ -62,6 +96,8 @@ public class ExpensesActivity extends AppCompatActivity {
                 Toast.makeText(this, "Settings coming soon", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_deleted_transactions) {
                 Toast.makeText(this, "Deleted Transactions folder coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_rate_us) {
+                Toast.makeText(this, "Thank you for wanting to rate us!", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_recommend) {
                 Toast.makeText(this, "Recommendations feature coming soon", Toast.LENGTH_SHORT).show();
             }

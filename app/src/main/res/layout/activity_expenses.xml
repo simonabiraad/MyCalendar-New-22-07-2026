@@ -25,6 +25,35 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/white" />
 
+        <Button
+            android:id="@+id/topExpensesButton"
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/light_green"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/expenses"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/expensesMenuButton"
+            app:layout_constraintStart_toEndOf="@id/expensesMenuButton"
+            app:layout_constraintTop_toTopOf="@id/expensesMenuButton" />
+
+        <ImageButton
+            android:id="@+id/expensesExportButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/export_options_description"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_save"
+            app:layout_constraintBottom_toBottomOf="@id/expensesSearchView"
+            app:layout_constraintEnd_toStartOf="@id/expensesSearchView"
+            app:layout_constraintTop_toTopOf="@id/expensesSearchView"
+            app:tint="@color/white" />
+
     <androidx.appcompat.widget.SearchView
         android:id="@+id/expensesSearchView"
         android:layout_width="47dp"
@@ -32,9 +61,21 @@
         android:layout_margin="8dp"
         android:background="@drawable/rounded_search_bg"
         app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/expensesOverflowButton"
         app:layout_constraintTop_toTopOf="parent"
         app:queryHint="@string/search_expenses_hint" />
+
+    <ImageButton
+        android:id="@+id/expensesOverflowButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/more_options_description"
+        android:src="@android:drawable/ic_menu_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
 
     <LinearLayout
         android:id="@+id/expensesButtonContainer"
