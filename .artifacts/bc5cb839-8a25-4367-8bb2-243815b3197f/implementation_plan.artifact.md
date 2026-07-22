@@ -1,38 +1,68 @@
-# Implementation Plan: Install Search Bar in Expenses
+# Implementation Plan: Rename Expense Categories
 
-The goal is to add a search bar at the top of the Expenses screen, positioned above the "Daily", "Weekly", and "Monthly" navigation buttons.
+Rename the navigation buttons and their associated activities to reflect the new categories: Income, Expense, and Transfer.
 
 ## User Review Required
 
-> [!NOTE]
-> The search bar will be added as a UI component. Since the app currently has no expense data or search logic, it will initially serve as a placeholder for future search functionality.
+> [!IMPORTANT]
+> To keep the codebase clean, I will also rename the Activity classes and Layout files.
+> - "Daily" becomes **Income**
+> - "Weekly" becomes **Expense**
+> - "Monthly" becomes **Transfer**
 
 ## Proposed Changes
 
-### Expenses UI
+### Resources Refactoring
 
 #### [MODIFY] [strings.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/values/strings.xml)
-- Add a new string resource for the search bar hint: `search_expenses_hint` -> "Search expenses...".
+- Rename `daily` string to `income` ("Income").
+- Rename `weekly` string to `expense` ("Expense").
+- Rename `monthly` string to `transfer` ("Transfer").
 
 #### [MODIFY] [activity_expenses.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/layout/activity_expenses.xml)
-- Add `androidx.appcompat.widget.SearchView` at the top of the layout.
-- Constrain it to the top of the parent.
-- Add some padding and a background (perhaps a dark gray) to make it visible on the black background.
-- Update `expensesButtonContainer` to be constrained below the `SearchView`.
+- Rename button IDs: `dailyButton` -> `incomeButton`, `weeklyButton` -> `expenseButton`, `monthlyButton` -> `transferButton`.
+- Update text references to the new string names.
 
-### Expenses Logic
+#### [NEW] [activity_income.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/layout/activity_income.xml)
+- Copy of `activity_daily_expenses.xml` with updated IDs and text.
+
+#### [NEW] [activity_expense_type.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/layout/activity_expense_type.xml)
+- Copy of `activity_weekly_expenses.xml` with updated IDs and text.
+
+#### [NEW] [activity_transfer.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/layout/activity_transfer.xml)
+- Copy of `activity_monthly_expenses.xml` with updated IDs and text.
+
+#### [DELETE] [activity_daily_expenses.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/layout/activity_daily_expenses.xml)
+#### [DELETE] [activity_weekly_expenses.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/layout/activity_weekly_expenses.xml)
+#### [DELETE] [activity_monthly_expenses.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/res/layout/activity_monthly_expenses.xml)
+
+### Code Refactoring
+
+#### [NEW] [IncomeActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/java/com/example/mycalendar2026sar/IncomeActivity.java)
+- Renamed from `DailyExpensesActivity`.
+
+#### [NEW] [ExpenseTypeActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/java/com/example/mycalendar2026sar/ExpenseTypeActivity.java)
+- Renamed from `WeeklyExpensesActivity`.
+
+#### [NEW] [TransferActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/java/com/example/mycalendar2026sar/TransferActivity.java)
+- Renamed from `MonthlyExpensesActivity`.
+
+#### [DELETE] [DailyExpensesActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/java/com/example/mycalendar2026sar/DailyExpensesActivity.java)
+#### [DELETE] [WeeklyExpensesActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/java/com/example/mycalendar2026sar/WeeklyExpensesActivity.java)
+#### [DELETE] [MonthlyExpensesActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/java/com/example/mycalendar2026sar/MonthlyExpensesActivity.java)
 
 #### [MODIFY] [ExpensesActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/java/com/example/mycalendar2026sar/ExpensesActivity.java)
-- Initialize the `SearchView` in `onCreate`.
-- Add a placeholder `OnQueryTextListener` to handle search inputs in the future.
+- Update button click listeners to use new IDs and launch the new Activity classes.
+
+#### [MODIFY] [AndroidManifest.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-23-07-2026/app/src/main/AndroidManifest.xml)
+- Update Activity declarations to the new class names.
 
 ## Verification Plan
 
 ### Automated Tests
-- Build the project to ensure no layout or compilation errors.
+- Build the project to ensure all references are correctly updated.
 
 ### Manual Verification
-- Open the Expenses screen.
-- Verify that the search bar appears above the Daily/Weekly/Monthly buttons.
-- Verify that the search bar is legible (white text on dark background).
-- Verify that you can type into the search bar.
+- Open Expenses screen.
+- Verify buttons say "Income", "Expense", and "Transfer".
+- Click each button and verify they open the correct (renamed) screens.

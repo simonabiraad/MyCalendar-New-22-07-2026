@@ -1,4 +1,16 @@
-- [ ] Add `search_expenses_hint` string to `strings.xml`
-- [ ] Add `SearchView` to `activity_expenses.xml`
-- [ ] Initialize `SearchView` in `ExpensesActivity.java`
-- [ ] Verify build and layout
+- [x] Update `strings.xml`
+- [x] Refactor "Daily" to "Income"
+    - [x] Create `activity_income.xml`
+    - [x] Create `IncomeActivity.java`
+    - [x] Update `AndroidManifest.xml`
+- [x] Refactor "Weekly" to "Expense"
+    - [x] Create `activity_expense_type.xml`
+    - [x] Create `ExpenseTypeActivity.java`
+    - [x] Update `AndroidManifest.xml`
+- [x] Refactor "Monthly" to "Transfer"
+    - [x] Create `activity_transfer.xml`
+    - [x] Create `TransferActivity.java`
+    - [x] Update `AndroidManifest.xml`
+- [x] Update `ExpensesActivity.java` (layout and code)
+- [ ] Delete old files (Skipped - no delete tool available, files are orphaned)
+- [x] Verify build

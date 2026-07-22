@@ -8,6 +8,16 @@
     android:background="#000000"
     tools:context=".ExpensesActivity">
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/expensesSearchView"
+        android:layout_width="215dp"
+        android:layout_height="30dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/rounded_search_bg"
+        app:iconifiedByDefault="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryHint="@string/search_expenses_hint" />
+
     <LinearLayout
         android:id="@+id/expensesButtonContainer"
         android:layout_width="match_parent"
@@ -15,32 +25,32 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/expensesSearchView">
 
         <Button
-            android:id="@+id/dailyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:id="@+id/incomeButton"
+            android:layout_width="125dp"
+            android:layout_height="70dp"
             android:layout_marginEnd="8dp"
             android:backgroundTint="@color/light_green"
-            android:text="@string/daily"
+            android:text="@string/income"
             android:textSize="11sp" />
 
         <Button
-            android:id="@+id/weeklyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:id="@+id/expenseButton"
+            android:layout_width="125dp"
+            android:layout_height="70dp"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/light_green"
-            android:text="@string/weekly"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:text="@string/expense_type"
             android:textSize="11sp" />
 
         <Button
-            android:id="@+id/monthlyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:backgroundTint="@color/light_green"
-            android:text="@string/monthly"
+            android:id="@+id/transferButton"
+            android:layout_width="125dp"
+            android:layout_height="70dp"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="@string/transfer"
             android:textSize="11sp" />
 
     </LinearLayout>

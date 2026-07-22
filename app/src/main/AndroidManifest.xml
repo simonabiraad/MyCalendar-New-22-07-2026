@@ -34,15 +34,15 @@
             android:exported="false"
             android:theme="@style/Theme.MyCalendar2026SAR" />
         <activity
-            android:name=".DailyExpensesActivity"
+            android:name=".IncomeActivity"
             android:exported="false"
             android:theme="@style/Theme.MyCalendar2026SAR" />
         <activity
-            android:name=".WeeklyExpensesActivity"
+            android:name=".ExpenseTypeActivity"
             android:exported="false"
             android:theme="@style/Theme.MyCalendar2026SAR" />
         <activity
-            android:name=".MonthlyExpensesActivity"
+            android:name=".TransferActivity"
             android:exported="false"
             android:theme="@style/Theme.MyCalendar2026SAR" />
         <receiver android:name=".ReminderReceiver" android:exported="false" />

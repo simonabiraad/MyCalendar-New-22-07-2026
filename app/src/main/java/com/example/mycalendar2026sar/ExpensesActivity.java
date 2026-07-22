@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.widget.SearchView;
+import android.widget.Toast;
 
 public class ExpensesActivity extends AppCompatActivity {
 
@@ -22,16 +24,32 @@ public class ExpensesActivity extends AppCompatActivity {
             return insets;
         });
 
-        findViewById(R.id.dailyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, DailyExpensesActivity.class));
+        findViewById(R.id.incomeButton).setOnClickListener(v -> {
+            startActivity(new Intent(this, IncomeActivity.class));
         });
 
-        findViewById(R.id.weeklyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, WeeklyExpensesActivity.class));
+        findViewById(R.id.expenseButton).setOnClickListener(v -> {
+            startActivity(new Intent(this, ExpenseTypeActivity.class));
         });
 
-        findViewById(R.id.monthlyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, MonthlyExpensesActivity.class));
+        findViewById(R.id.transferButton).setOnClickListener(v -> {
+            startActivity(new Intent(this, TransferActivity.class));
+        });
+
+        SearchView searchView = findViewById(R.id.expensesSearchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Future implementation for search
+                Toast.makeText(ExpensesActivity.this, "Searching for: " + query, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Future implementation for real-time filtering
+                return true;
+            }
         });
     }
 }
