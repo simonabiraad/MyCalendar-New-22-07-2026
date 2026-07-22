@@ -5,9 +5,11 @@
     <string name="note_hint">Enter note here...</string>
     <string name="save_note">Add Notes</string>
     <string name="expenses">Expenses</string>
-    <string name="income">Income</string>
-    <string name="expense_type">Expense</string>
-    <string name="transfer">Transfer</string>
+    <string name="income">Daily</string>
+    <string name="expense_type">Weekly</string>
+    <string name="transfer">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="all_expenses">All</string>
     <string name="menu_remove_ads">Remove Ads</string>
     <string name="menu_summary">Summary</string>
     <string name="menu_account_summary">Account Summary</string>

@@ -111,16 +111,32 @@ public class ExpensesActivity extends AppCompatActivity {
             return insets;
         });
 
-        findViewById(R.id.incomeButton).setOnClickListener(v -> {
+        findViewById(R.id.dailyButton).setOnClickListener(v -> {
             startActivity(new Intent(this, IncomeActivity.class));
         });
 
-        findViewById(R.id.expenseButton).setOnClickListener(v -> {
+        findViewById(R.id.weeklyButton).setOnClickListener(v -> {
             startActivity(new Intent(this, ExpenseTypeActivity.class));
         });
 
-        findViewById(R.id.transferButton).setOnClickListener(v -> {
+        findViewById(R.id.monthlyButton).setOnClickListener(v -> {
             startActivity(new Intent(this, TransferActivity.class));
+        });
+
+        findViewById(R.id.yearlyButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Yearly Expenses feature coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.allButton).setOnClickListener(v -> {
+            Toast.makeText(this, "All Expenses view coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.cashInButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Cash In functionality coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.cashOutButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Cash Out functionality coming soon", Toast.LENGTH_SHORT).show();
         });
 
         SearchView searchView = findViewById(R.id.expensesSearchView);

@@ -1,14 +1,3 @@
-- `[x]` Move search bar to the right in `activity_expenses.xml`
-- `[x]` Verify changes in layout editor (if possible) or via build
-- `[x]` Create walkthrough summary
-- `[x]` Add "Expenses" title in green to navigation drawer header
-- `[x]` Add "Rate Us" item above "Recommend" in Expenses menu
-- `[x]` Add "Expenses" button next to menu button in Expenses activity
-- `[x]` Show "Add Accounts" dialog when "Expenses" button is clicked
-- `[x]` Add three-dot overflow menu to Expenses screen
-- `[x]` Implement checkable "Date Ascending" and "Date Descending" items
-- `[x]` Verify build and layout alignment
-- `[x]` Add "mini box" export button to Expenses header
-- `[x]` Create `menu_expenses_export.xml` with Report, PDF, Excel items
-- `[x]` Implement `PopupMenu` for export options in `ExpensesActivity.java`
+- `[x]` Add "Cash In" and "Cash Out" buttons to `activity_expenses.xml`
+- `[x]` Initialize buttons and add listeners in `ExpensesActivity.java`
 - `[x]` Verify build and final walkthrough update
