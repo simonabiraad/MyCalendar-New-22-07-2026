@@ -5,18 +5,69 @@ import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.widget.SearchView;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
+
 public class ExpensesActivity extends AppCompatActivity {
+
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_expenses);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.expensesNavigationView);
+
+        findViewById(R.id.expensesMenuButton).setOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START);
+        });
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_remove_ads) {
+                Toast.makeText(this, "Remove Ads feature coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_summary) {
+                Toast.makeText(this, "Summary feature coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_account_summary) {
+                Toast.makeText(this, "Account Summary feature coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_transaction_all) {
+                Toast.makeText(this, "Transaction - All Accounts feature coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_accounts) {
+                Toast.makeText(this, "Accounts management coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_transfer) {
+                startActivity(new Intent(this, TransferActivity.class));
+            } else if (id == R.id.nav_report_all) {
+                Toast.makeText(this, "Reports feature coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_transaction_names) {
+                Toast.makeText(this, "Transaction Names management coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_notebook) {
+                Toast.makeText(this, "Notebook feature coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_calendar) {
+                finish(); // Go back to MainActivity
+            } else if (id == R.id.nav_cash_calculator) {
+                Toast.makeText(this, "Cash Calculator coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_backup_restore) {
+                Toast.makeText(this, "Backup & Restore coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_setting) {
+                Toast.makeText(this, "Settings coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_deleted_transactions) {
+                Toast.makeText(this, "Deleted Transactions folder coming soon", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_recommend) {
+                Toast.makeText(this, "Recommendations feature coming soon", Toast.LENGTH_SHORT).show();
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
         
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.expenses_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

@@ -1,0 +1,4 @@
+- `[x]` Move search bar to the right in `activity_expenses.xml`
+- `[x]` Verify changes in layout editor (if possible) or via build
+- `[x]` Create walkthrough summary
+- `[x]` Add "Expenses" title in green to navigation drawer header
