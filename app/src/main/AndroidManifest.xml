@@ -30,6 +30,10 @@
             android:exported="false"
             android:theme="@style/Theme.MyCalendar2026SAR" />
         <activity
+            android:name=".CategoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyCalendar2026SAR" />
+        <activity
             android:name=".ExpensesActivity"
             android:exported="false"
             android:theme="@style/Theme.MyCalendar2026SAR" />

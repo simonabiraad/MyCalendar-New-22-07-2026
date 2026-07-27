@@ -68,6 +68,10 @@ public class ExpensesActivity extends AppCompatActivity {
             popup.show();
         });
 
+        findViewById(R.id.categoryButton).setOnClickListener(v -> {
+            startActivity(new Intent(this, CategoryActivity.class));
+        });
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_remove_ads) {

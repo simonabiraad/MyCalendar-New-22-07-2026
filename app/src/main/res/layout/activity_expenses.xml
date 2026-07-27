@@ -40,6 +40,21 @@
             app:layout_constraintTop_toTopOf="@id/expensesMenuButton" />
 
         <ImageButton
+            android:id="@+id/categoryButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/category_title"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_agenda"
+            app:layout_constraintBottom_toBottomOf="@id/expensesSearchView"
+            app:layout_constraintEnd_toStartOf="@id/expensesExportButton"
+            app:layout_constraintTop_toTopOf="@id/expensesSearchView"
+            app:tint="@color/white" />
+
+        <ImageButton
             android:id="@+id/expensesExportButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -87,6 +102,8 @@
             android:paddingTop="15dp"
             android:paddingEnd="8dp"
             app:layout_constraintBottom_toTopOf="@+id/expensesHomeContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expensesSearchView">
 
             <Button
@@ -162,7 +179,7 @@
                     android:id="@+id/addIncomeButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="80dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/hunter_green"
@@ -178,7 +195,7 @@
                     android:id="@+id/addExpenseButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="80dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@android:color/holo_orange_light"
@@ -200,7 +217,7 @@
                     android:id="@+id/transferActionButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="80dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@android:color/holo_blue_dark"
@@ -216,10 +233,10 @@
                     android:id="@+id/transactionActionButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="80dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/material_dynamic_neutral_variant40"
+                    android:backgroundTint="@color/gray"
                     android:text="@string/transaction"
                     android:textColor="@color/white"
                     app:cornerRadius="12dp"
@@ -261,7 +278,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="2dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/material_dynamic_neutral_variant40"
+                android:backgroundTint="@color/gray"
                 android:insetLeft="0dp"
                 android:insetRight="0dp"
                 android:padding="0dp"
