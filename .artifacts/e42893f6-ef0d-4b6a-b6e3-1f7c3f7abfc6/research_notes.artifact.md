@@ -1,23 +1,17 @@
-# Research: Icons for Expenses Menu
+# Research: Vector Icons for Add/Remove
 
-I have selected the following standard Android icons for the menu items:
+I will use the following vector paths for the new icons:
 
-| Item | Icon Resource |
-| :--- | :--- |
-| Remove Ads | `@android:drawable/ic_menu_close_clear_cancel` |
-| Summary | `@android:drawable/ic_menu_info_details` |
-| Account Summary | `@android:drawable/ic_menu_myplaces` |
-| Transaction-All Accounts | `@android:drawable/ic_menu_agenda` |
-| Accounts | `@android:drawable/ic_menu_manage` |
-| Transfer | `@android:drawable/ic_menu_share` |
-| Report-All Accounts | `@android:drawable/ic_menu_report_image` |
-| Transaction Names | `@android:drawable/ic_menu_edit` |
-| Notebook | `@android:drawable/ic_input_add` |
-| Calendar | `@android:drawable/ic_menu_today` |
-| Cash Calculator | `@android:drawable/ic_menu_add` |
-| Backup and Restore | `@android:drawable/ic_menu_save` |
-| Setting | `@android:drawable/ic_menu_preferences` |
-| Deleted Transactions | `@android:drawable/ic_menu_delete` |
-| Recommend | `@android:drawable/ic_menu_send` |
+**Add Circle (+)**
+```xml
+M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2z
+M17,13h-4v4h-2v-4L7,13v-2h4L11,7h2v4h4v2z
+```
 
-These icons are available by default in the Android system and provide a consistent "mini logo" look as requested.
+**Remove Circle (-)**
+```xml
+M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2z
+M17,13L7,13v-2h10v2z
+```
+
+These paths create a solid circle with the respective sign cut out or drawn over it in white. This matches the user's request for "logo + in a round" and "minus in a round".

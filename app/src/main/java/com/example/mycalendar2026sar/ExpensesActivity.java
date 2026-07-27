@@ -11,7 +11,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -109,6 +111,55 @@ public class ExpensesActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        final LinearLayout calendarContainer = findViewById(R.id.expensesCalendarContainer);
+        final LinearLayout notebookButtonContainer = findViewById(R.id.expensesButtonContainer);
+        final LinearLayout homeContainer = findViewById(R.id.expensesHomeContainer);
+        final LinearLayout chartContainer = findViewById(R.id.expensesChartContainer);
+
+        findViewById(R.id.homeNavButton).setOnClickListener(v -> {
+            calendarContainer.setVisibility(View.GONE);
+            notebookButtonContainer.setVisibility(View.GONE);
+            chartContainer.setVisibility(View.GONE);
+            homeContainer.setVisibility(View.VISIBLE);
+        });
+
+        findViewById(R.id.calendarNavButton).setOnClickListener(v -> {
+            calendarContainer.setVisibility(View.VISIBLE);
+            notebookButtonContainer.setVisibility(View.GONE);
+            chartContainer.setVisibility(View.GONE);
+            homeContainer.setVisibility(View.GONE);
+        });
+
+        findViewById(R.id.notebookNavButton).setOnClickListener(v -> {
+            calendarContainer.setVisibility(View.GONE);
+            notebookButtonContainer.setVisibility(View.VISIBLE);
+            chartContainer.setVisibility(View.GONE);
+            homeContainer.setVisibility(View.GONE);
+        });
+
+        findViewById(R.id.chartNavButton).setOnClickListener(v -> {
+            calendarContainer.setVisibility(View.GONE);
+            notebookButtonContainer.setVisibility(View.GONE);
+            chartContainer.setVisibility(View.VISIBLE);
+            homeContainer.setVisibility(View.GONE);
+        });
+
+        findViewById(R.id.addIncomeButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Add Income feature coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.addExpenseButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Add Expenses feature coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.transferActionButton).setOnClickListener(v -> {
+            startActivity(new Intent(this, TransferActivity.class));
+        });
+
+        findViewById(R.id.transactionActionButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Transaction history feature coming soon", Toast.LENGTH_SHORT).show();
         });
 
         findViewById(R.id.dailyButton).setOnClickListener(v -> {

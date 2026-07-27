@@ -1,3 +1,5 @@
-- `[x]` Add "Cash In" and "Cash Out" buttons to `activity_expenses.xml`
-- `[x]` Initialize buttons and add listeners in `ExpensesActivity.java`
-- `[x]` Verify build and final walkthrough update
+- `[x]` Create `ic_add_circle.xml` vector drawable
+- `[x]` Create `ic_remove_circle.xml` vector drawable
+- `[x]` Update `activity_expenses.xml` to use the new icons
+- `[x]` Verify build and functionality
+- `[x]` Create walkthrough summary

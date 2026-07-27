@@ -1,31 +1,27 @@
-# Implementation Plan - Add Cash In and Cash Out Buttons
+# Implementation Plan - Update Icons for Income and Expense Buttons
 
-The user wants to add two buttons, "Cash In" and "Cash Out", at the bottom ("last page") of the Expenses screen.
-
-## User Review Required
-
-> [!IMPORTANT]
-> I will place these two buttons side-by-side at the bottom of the `ExpensesActivity` layout, just above or below the "Expenses" title.
-> I will use colors that typically represent these actions (e.g., Green for Cash In, Red for Cash Out) and make them rounded to match the existing button style.
+Update the icons for "Add Income" and "Add Expense" to show "+" and "-" inside circles, respectively.
 
 ## Proposed Changes
+
+### [Resources Component]
+
+#### [NEW] [ic_add_circle.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-22-07-2026/app/src/main/res/drawable/ic_add_circle.xml)
+- Create a new vector drawable for a "+" inside a circle.
+
+#### [NEW] [ic_remove_circle.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-22-07-2026/app/src/main/res/drawable/ic_remove_circle.xml)
+- Create a new vector drawable for a "-" inside a circle.
 
 ### [Expenses Component]
 
 #### [MODIFY] [activity_expenses.xml](file:///C:/Users/simon/StudioProjects/MyCalendar-New-22-07-2026/app/src/main/res/layout/activity_expenses.xml)
-- Add a new `LinearLayout` at the bottom of the `ConstraintLayout`.
-- Add "Cash In" and "Cash Out" buttons inside this layout.
-- Use `app:cornerRadius` to make them rounded, matching the navigation buttons.
-- Adjust the constraints of `expensesTitle` if necessary to ensure it remains visible.
-
-#### [MODIFY] [ExpensesActivity.java](file:///C:/Users/simon/StudioProjects/MyCalendar-New-22-07-2026/app/src/main/java/com/example/mycalendar2026sar/ExpensesActivity.java)
-- Initialize the two new buttons.
-- Implement click listeners for "Cash In" and "Cash Out" (e.g., showing a Toast or placeholder message).
+- Update `addIncomeButton` to use `@drawable/ic_add_circle`.
+- Update `addExpenseButton` to use `@drawable/ic_remove_circle`.
 
 ## Verification Plan
 
 ### Manual Verification
 - Deploy the app and navigate to the Expenses screen.
-- Scroll to the bottom and verify that the "Cash In" and "Cash Out" buttons are visible.
-- Verify that they have the requested rounded appearance and are placed side-by-side.
-- Click each button to verify the expected interaction.
+- Verify that the **Add Income** button now has a circled plus icon.
+- Verify that the **Add Expense** button now has a circled minus icon.
+- Confirm the icons are correctly colored (white) and sized within the buttons.
