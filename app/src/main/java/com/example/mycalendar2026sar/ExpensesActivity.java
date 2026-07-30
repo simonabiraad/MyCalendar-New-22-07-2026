@@ -17,13 +17,21 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class ExpensesActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
+    private List<Account> accountList = new ArrayList<>();
+    private AccountAdapter adapter;
+    private Button topExpensesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +39,23 @@ public class ExpensesActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_expenses);
 
+        loadAccounts();
+        if (accountList.isEmpty()) {
+            accountList.add(new Account("Expenses", 0.00));
+            accountList.add(new Account("Cash", 500.00));
+            accountList.add(new Account("Bank", 1500.00));
+            saveAccounts();
+        }
+
         drawerLayout = findViewById(R.id.drawer_layout);
+        topExpensesButton = findViewById(R.id.topExpensesButton);
         NavigationView navigationView = findViewById(R.id.expensesNavigationView);
 
         findViewById(R.id.expensesMenuButton).setOnClickListener(v -> {
             drawerLayout.openDrawer(GravityCompat.START);
         });
 
-        findViewById(R.id.topExpensesButton).setOnClickListener(v -> {
-            new androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setTitle(R.string.add_accounts_title)
-                    .setMessage("Manage your accounts here.")
-                    .setPositiveButton("OK", null)
-                    .show();
-        });
+        topExpensesButton.setOnClickListener(v -> showAccountsDialog());
 
         findViewById(R.id.expensesOverflowButton).setOnClickListener(v -> {
             androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(this, v);
@@ -263,5 +274,138 @@ public class ExpensesActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void showAccountsDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_accounts, null);
+        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        androidx.recyclerview.widget.RecyclerView recyclerView = dialogView.findViewById(R.id.accountsRecyclerView);
+        recyclerView.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
+        
+        adapter = new AccountAdapter(accountList, new AccountAdapter.OnAccountClickListener() {
+            @Override
+            public void onAccountClick(Account account) {
+                topExpensesButton.setText(account.getName());
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onDeleteClick(Account account, int position) {
+                new androidx.appcompat.app.AlertDialog.Builder(ExpensesActivity.this)
+                        .setTitle("Delete Account")
+                        .setMessage("Are you sure you want to delete " + account.getName() + "?")
+                        .setPositiveButton("Delete", (d, w) -> {
+                            accountList.remove(account);
+                            adapter.updateList(accountList);
+                            saveAccounts();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+
+            @Override
+            public void onRenameClick(Account account, int position) {
+                android.widget.EditText input = new android.widget.EditText(ExpensesActivity.this);
+                input.setText(account.getName());
+                new androidx.appcompat.app.AlertDialog.Builder(ExpensesActivity.this)
+                        .setTitle("Rename Account")
+                        .setView(input)
+                        .setPositiveButton("Rename", (d, w) -> {
+                            String newName = input.getText().toString();
+                            if (!newName.isEmpty()) {
+                                account.setName(newName);
+                                adapter.notifyItemChanged(position);
+                                if (topExpensesButton.getText().toString().equals(account.getName())) {
+                                    topExpensesButton.setText(newName);
+                                }
+                                saveAccounts();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+
+            @Override
+            public void onListChanged() {
+                saveAccounts();
+            }
+        });
+        recyclerView.setAdapter(adapter);
+
+        dialogView.findViewById(R.id.editAccountsButton).setOnClickListener(v -> {
+            adapter.setEditMode(!adapter.isEditMode());
+        });
+
+        androidx.appcompat.widget.SearchView searchView = dialogView.findViewById(R.id.accountsSearchView);
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
+
+        dialogView.findViewById(R.id.addAccountButton).setOnClickListener(v -> {
+            android.widget.EditText input = new android.widget.EditText(this);
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Add New Account")
+                    .setView(input)
+                    .setPositiveButton("Add", (d, w) -> {
+                        String name = input.getText().toString();
+                        if (!name.isEmpty()) {
+                            accountList.add(new Account(name, 0.00));
+                            adapter.updateList(accountList);
+                            saveAccounts();
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+
+        dialog.show();
+    }
+
+    private void saveAccounts() {
+        try {
+            JSONArray array = new JSONArray();
+            for (Account account : accountList) {
+                JSONObject obj = new JSONObject();
+                obj.put("name", account.getName());
+                obj.put("balance", account.getBalance());
+                array.put(obj);
+            }
+            getSharedPreferences("ExpensesPrefs", MODE_PRIVATE)
+                    .edit()
+                    .putString("AccountList", array.toString())
+                    .apply();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadAccounts() {
+        try {
+            String json = getSharedPreferences("ExpensesPrefs", MODE_PRIVATE)
+                    .getString("AccountList", null);
+            if (json != null) {
+                JSONArray array = new JSONArray(json);
+                accountList.clear();
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+                    accountList.add(new Account(obj.getString("name"), obj.getDouble("balance")));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
