@@ -81,7 +81,7 @@
             android:id="@+id/expensesButtonContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="8dp"
@@ -177,6 +177,110 @@
                 android:insetRight="0dp"
                 android:padding="0dp"
                 android:text="All"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                app:cornerRadius="20dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subDailyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/subExpensesContainer">
+
+            <Button
+                android:id="@+id/subTodayButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/light_green"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:text="@string/label_today"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                app:cornerRadius="20dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subWeeklyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/subDailyContainer">
+
+            <Button
+                android:id="@+id/subWeeklyRangeButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="@android:color/holo_orange_light"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:text="27-07-2026 to 02-08-2026"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                app:cornerRadius="20dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subMonthlyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/subWeeklyContainer">
+
+            <Button
+                android:id="@+id/subMonthlyRangeButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="@android:color/holo_blue_dark"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:text="01-07-2026 to 31-07-2026"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                app:cornerRadius="20dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subYearlyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/subMonthlyContainer">
+
+            <Button
+                android:id="@+id/subYearlyRangeButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="@android:color/holo_purple"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:text="01-01-2026 to 31-12-2026"
                 android:textAllCaps="false"
                 android:textSize="11sp"
                 app:cornerRadius="20dp" />

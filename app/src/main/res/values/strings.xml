@@ -9,6 +9,7 @@
     <string name="expense_type">Expense</string>
     <string name="transfer">Transfer</string>
     <string name="label_daily">Daily</string>
+    <string name="label_today">Today</string>
     <string name="label_weekly">Weekly</string>
     <string name="label_monthly">Monthly</string>
     <string name="yearly">Yearly</string>

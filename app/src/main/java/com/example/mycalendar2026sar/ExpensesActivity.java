@@ -12,9 +12,14 @@ import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class ExpensesActivity extends AppCompatActivity {
 
@@ -115,27 +120,118 @@ public class ExpensesActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.dailyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, DailyExpensesActivity.class));
+            View subDaily = findViewById(R.id.subDailyContainer);
+            View subAll = findViewById(R.id.subExpensesContainer);
+            View subWeekly = findViewById(R.id.subWeeklyContainer);
+            View subMonthly = findViewById(R.id.subMonthlyContainer);
+            View subYearly = findViewById(R.id.subYearlyContainer);
+            subAll.setVisibility(View.GONE);
+            subWeekly.setVisibility(View.GONE);
+            subMonthly.setVisibility(View.GONE);
+            subYearly.setVisibility(View.GONE);
+            if (subDaily.getVisibility() == View.VISIBLE) {
+                subDaily.setVisibility(View.GONE);
+            } else {
+                subDaily.setVisibility(View.VISIBLE);
+            }
         });
+
+        findViewById(R.id.subTodayButton).setOnClickListener(v -> startActivity(new Intent(this, DailyExpensesActivity.class)));
 
         findViewById(R.id.weeklyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, WeeklyExpensesActivity.class));
+            View subWeekly = findViewById(R.id.subWeeklyContainer);
+            View subAll = findViewById(R.id.subExpensesContainer);
+            View subDaily = findViewById(R.id.subDailyContainer);
+            View subMonthly = findViewById(R.id.subMonthlyContainer);
+            View subYearly = findViewById(R.id.subYearlyContainer);
+            subAll.setVisibility(View.GONE);
+            subDaily.setVisibility(View.GONE);
+            subMonthly.setVisibility(View.GONE);
+            subYearly.setVisibility(View.GONE);
+            if (subWeekly.getVisibility() == View.VISIBLE) {
+                subWeekly.setVisibility(View.GONE);
+            } else {
+                subWeekly.setVisibility(View.VISIBLE);
+            }
         });
+
+        Button subWeeklyRangeButton = findViewById(R.id.subWeeklyRangeButton);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        String startWeekly = sdf.format(calendar.getTime());
+        calendar.add(Calendar.DATE, 6);
+        String endWeekly = sdf.format(calendar.getTime());
+        subWeeklyRangeButton.setText(startWeekly + " to " + endWeekly);
+        subWeeklyRangeButton.setOnClickListener(v -> startActivity(new Intent(this, WeeklyExpensesActivity.class)));
 
         findViewById(R.id.monthlyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, MonthlyExpensesActivity.class));
+            View subMonthly = findViewById(R.id.subMonthlyContainer);
+            View subAll = findViewById(R.id.subExpensesContainer);
+            View subDaily = findViewById(R.id.subDailyContainer);
+            View subWeekly = findViewById(R.id.subWeeklyContainer);
+            View subYearly = findViewById(R.id.subYearlyContainer);
+            subAll.setVisibility(View.GONE);
+            subDaily.setVisibility(View.GONE);
+            subWeekly.setVisibility(View.GONE);
+            subYearly.setVisibility(View.GONE);
+            if (subMonthly.getVisibility() == View.VISIBLE) {
+                subMonthly.setVisibility(View.GONE);
+            } else {
+                subMonthly.setVisibility(View.VISIBLE);
+            }
         });
+
+        Button subMonthlyRangeButton = findViewById(R.id.subMonthlyRangeButton);
+        Calendar monthCal = Calendar.getInstance();
+        monthCal.set(Calendar.DAY_OF_MONTH, 1);
+        String startMonth = sdf.format(monthCal.getTime());
+        monthCal.set(Calendar.DAY_OF_MONTH, monthCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String endMonth = sdf.format(monthCal.getTime());
+        subMonthlyRangeButton.setText(startMonth + " to " + endMonth);
+        subMonthlyRangeButton.setOnClickListener(v -> startActivity(new Intent(this, MonthlyExpensesActivity.class)));
 
         findViewById(R.id.yearlyButton).setOnClickListener(v -> {
-            Toast.makeText(this, "Yearly Expenses feature coming soon", Toast.LENGTH_SHORT).show();
+            View subYearly = findViewById(R.id.subYearlyContainer);
+            View subAll = findViewById(R.id.subExpensesContainer);
+            View subDaily = findViewById(R.id.subDailyContainer);
+            View subWeekly = findViewById(R.id.subWeeklyContainer);
+            View subMonthly = findViewById(R.id.subMonthlyContainer);
+            subAll.setVisibility(View.GONE);
+            subDaily.setVisibility(View.GONE);
+            subWeekly.setVisibility(View.GONE);
+            subMonthly.setVisibility(View.GONE);
+            if (subYearly.getVisibility() == View.VISIBLE) {
+                subYearly.setVisibility(View.GONE);
+            } else {
+                subYearly.setVisibility(View.VISIBLE);
+            }
         });
 
+        Button subYearlyRangeButton = findViewById(R.id.subYearlyRangeButton);
+        Calendar yearCal = Calendar.getInstance();
+        yearCal.set(Calendar.DAY_OF_YEAR, 1);
+        String startYear = sdf.format(yearCal.getTime());
+        yearCal.set(Calendar.DAY_OF_YEAR, yearCal.getActualMaximum(Calendar.DAY_OF_YEAR));
+        String endYear = sdf.format(yearCal.getTime());
+        subYearlyRangeButton.setText(startYear + " to " + endYear);
+        subYearlyRangeButton.setOnClickListener(v -> Toast.makeText(this, "Yearly Expenses view coming soon", Toast.LENGTH_SHORT).show());
+
         findViewById(R.id.allButton).setOnClickListener(v -> {
-            View subContainer = findViewById(R.id.subExpensesContainer);
-            if (subContainer.getVisibility() == View.VISIBLE) {
-                subContainer.setVisibility(View.GONE);
+            View subAll = findViewById(R.id.subExpensesContainer);
+            View subDaily = findViewById(R.id.subDailyContainer);
+            View subWeekly = findViewById(R.id.subWeeklyContainer);
+            View subMonthly = findViewById(R.id.subMonthlyContainer);
+            View subYearly = findViewById(R.id.subYearlyContainer);
+            subDaily.setVisibility(View.GONE);
+            subWeekly.setVisibility(View.GONE);
+            subMonthly.setVisibility(View.GONE);
+            subYearly.setVisibility(View.GONE);
+            if (subAll.getVisibility() == View.VISIBLE) {
+                subAll.setVisibility(View.GONE);
             } else {
-                subContainer.setVisibility(View.VISIBLE);
+                subAll.setVisibility(View.VISIBLE);
             }
             Toast.makeText(this, "All Expenses view coming soon", Toast.LENGTH_SHORT).show();
         });
