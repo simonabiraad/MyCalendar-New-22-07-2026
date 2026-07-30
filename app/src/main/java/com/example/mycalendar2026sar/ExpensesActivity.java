@@ -11,9 +11,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -50,6 +49,8 @@ public class ExpensesActivity extends AppCompatActivity {
                 String title = String.valueOf(item.getTitle());
                 if (id == R.id.action_date_asc || id == R.id.action_date_desc) {
                     item.setChecked(true);
+                } else if (id == R.id.action_category) {
+                    startActivity(new Intent(this, CategoryActivity.class));
                 }
                 Toast.makeText(this, title + " selected", Toast.LENGTH_SHORT).show();
                 return true;
@@ -66,10 +67,6 @@ public class ExpensesActivity extends AppCompatActivity {
                 return true;
             });
             popup.show();
-        });
-
-        findViewById(R.id.categoryButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, CategoryActivity.class));
         });
 
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -110,72 +107,23 @@ public class ExpensesActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
-        
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.expenses_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        final LinearLayout calendarContainer = findViewById(R.id.expensesCalendarContainer);
-        final LinearLayout notebookButtonContainer = findViewById(R.id.expensesButtonContainer);
-        final LinearLayout homeContainer = findViewById(R.id.expensesHomeContainer);
-        final LinearLayout chartContainer = findViewById(R.id.expensesChartContainer);
-
-        findViewById(R.id.homeNavButton).setOnClickListener(v -> {
-            calendarContainer.setVisibility(View.GONE);
-            notebookButtonContainer.setVisibility(View.GONE);
-            chartContainer.setVisibility(View.GONE);
-            homeContainer.setVisibility(View.VISIBLE);
-        });
-
-        findViewById(R.id.calendarNavButton).setOnClickListener(v -> {
-            calendarContainer.setVisibility(View.VISIBLE);
-            notebookButtonContainer.setVisibility(View.GONE);
-            chartContainer.setVisibility(View.GONE);
-            homeContainer.setVisibility(View.GONE);
-        });
-
-        findViewById(R.id.notebookNavButton).setOnClickListener(v -> {
-            calendarContainer.setVisibility(View.GONE);
-            notebookButtonContainer.setVisibility(View.VISIBLE);
-            chartContainer.setVisibility(View.GONE);
-            homeContainer.setVisibility(View.GONE);
-        });
-
-        findViewById(R.id.chartNavButton).setOnClickListener(v -> {
-            calendarContainer.setVisibility(View.GONE);
-            notebookButtonContainer.setVisibility(View.GONE);
-            chartContainer.setVisibility(View.VISIBLE);
-            homeContainer.setVisibility(View.GONE);
-        });
-
-        findViewById(R.id.addIncomeButton).setOnClickListener(v -> {
-            Toast.makeText(this, "Add Income feature coming soon", Toast.LENGTH_SHORT).show();
-        });
-
-        findViewById(R.id.addExpenseButton).setOnClickListener(v -> {
-            Toast.makeText(this, "Add Expenses feature coming soon", Toast.LENGTH_SHORT).show();
-        });
-
-        findViewById(R.id.transferActionButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, TransferActivity.class));
-        });
-
-        findViewById(R.id.transactionActionButton).setOnClickListener(v -> {
-            Toast.makeText(this, "Transaction history feature coming soon", Toast.LENGTH_SHORT).show();
-        });
-
         findViewById(R.id.dailyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, IncomeActivity.class));
+            startActivity(new Intent(this, DailyExpensesActivity.class));
         });
 
         findViewById(R.id.weeklyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, ExpenseTypeActivity.class));
+            startActivity(new Intent(this, WeeklyExpensesActivity.class));
         });
 
         findViewById(R.id.monthlyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, TransferActivity.class));
+            startActivity(new Intent(this, MonthlyExpensesActivity.class));
         });
 
         findViewById(R.id.yearlyButton).setOnClickListener(v -> {
@@ -183,7 +131,17 @@ public class ExpensesActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.allButton).setOnClickListener(v -> {
+            View subContainer = findViewById(R.id.subExpensesContainer);
+            if (subContainer.getVisibility() == View.VISIBLE) {
+                subContainer.setVisibility(View.GONE);
+            } else {
+                subContainer.setVisibility(View.VISIBLE);
+            }
             Toast.makeText(this, "All Expenses view coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.subAllButton).setOnClickListener(v -> {
+            Toast.makeText(this, "Full-width All clicked", Toast.LENGTH_SHORT).show();
         });
 
         findViewById(R.id.cashInButton).setOnClickListener(v -> {

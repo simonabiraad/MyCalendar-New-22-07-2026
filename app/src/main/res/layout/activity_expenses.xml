@@ -40,21 +40,6 @@
             app:layout_constraintTop_toTopOf="@id/expensesMenuButton" />
 
         <ImageButton
-            android:id="@+id/categoryButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/category_title"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@android:drawable/ic_menu_agenda"
-            app:layout_constraintBottom_toBottomOf="@id/expensesSearchView"
-            app:layout_constraintEnd_toStartOf="@id/expensesExportButton"
-            app:layout_constraintTop_toTopOf="@id/expensesSearchView"
-            app:tint="@color/white" />
-
-        <ImageButton
             android:id="@+id/expensesExportButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -93,190 +78,22 @@
             app:tint="@color/white" />
 
         <LinearLayout
-            android:id="@+id/mainNavButtonContainer"
-            android:layout_width="400dp"
-            android:layout_height="59dp"
+            android:id="@+id/expensesButtonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingTop="15dp"
-            android:paddingEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/expensesHomeContainer"
+            android:padding="8dp"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expensesSearchView">
 
             <Button
-                android:id="@+id/homeNavButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="2dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/light_green"
-                android:insetLeft="0dp"
-                android:insetRight="0dp"
-                android:padding="0dp"
-                android:text="@string/menu_home"
-                android:textSize="11sp"
-                app:cornerRadius="20dp" />
-
-            <Button
-                android:id="@+id/calendarNavButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="2dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/light_green"
-                android:insetLeft="0dp"
-                android:insetRight="0dp"
-                android:padding="0dp"
-                android:text="@string/menu_calendar"
-                android:textSize="11sp"
-                app:cornerRadius="20dp" />
-
-            <Button
-                android:id="@+id/notebookNavButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/light_green"
-                android:insetLeft="0dp"
-                android:insetRight="0dp"
-                android:padding="0dp"
-                android:text="@string/menu_notebook"
-                android:textSize="11sp"
-                app:cornerRadius="20dp" />
-
-            <Button
-                android:id="@+id/chartNavButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/light_green"
-                android:insetLeft="0dp"
-                android:insetRight="0dp"
-                android:padding="0dp"
-                android:text="@string/menu_chart"
-                android:textSize="11sp"
-                app:cornerRadius="20dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/expensesHomeContainer"
-            android:layout_width="410dp"
-            android:layout_height="258dp"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/mainNavButtonContainer">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/addIncomeButton"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/hunter_green"
-                    android:text="@string/add_income"
-                    android:textColor="@color/white"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_add_circle"
-                    app:iconGravity="top"
-                    app:iconSize="30dp"
-                    app:iconTint="@color/white" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/addExpenseButton"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@android:color/holo_orange_light"
-                    android:text="@string/add_expense"
-                    android:textColor="@color/white"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_remove_circle"
-                    app:iconGravity="top"
-                    app:iconSize="32dp"
-                    app:iconTint="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="394dp"
-                android:layout_height="110dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/transferActionButton"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@android:color/holo_blue_dark"
-                    android:text="@string/transfer"
-                    android:textColor="@color/white"
-                    app:cornerRadius="12dp"
-                    app:icon="@android:drawable/ic_menu_share"
-                    app:iconGravity="top"
-                    app:iconSize="32dp"
-                    app:iconTint="@color/white" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/transactionActionButton"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/gray"
-                    android:text="@string/transaction"
-                    android:textColor="@color/white"
-                    app:cornerRadius="12dp"
-                    app:icon="@android:drawable/ic_menu_agenda"
-                    app:iconGravity="top"
-                    app:iconSize="32dp"
-                    app:iconTint="@color/white" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/expensesCalendarContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/mainNavButtonContainer">
-
-            <CalendarView
-                android:id="@+id/expensesCalendarView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/expensesButtonContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/expensesCalendarContainer">
-
-            <Button
                 android:id="@+id/allButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/gray"
                 android:insetLeft="0dp"
@@ -290,7 +107,6 @@
                 android:id="@+id/dailyButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/light_green"
                 android:insetLeft="0dp"
@@ -304,7 +120,6 @@
                 android:id="@+id/weeklyButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/holo_orange_light"
                 android:insetLeft="0dp"
@@ -331,7 +146,6 @@
                 android:id="@+id/yearlyButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/holo_purple"
                 android:insetLeft="0dp"
@@ -344,52 +158,41 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/expensesChartContainer"
+            android:id="@+id/subExpensesContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="32dp"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/expensesButtonContainer">
 
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:contentDescription="@string/chart_icon_description"
-                android:src="@android:drawable/ic_menu_report_image"
-                app:tint="@color/light_green" />
+            <Button
+                android:id="@+id/subAllButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/gray"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:padding="0dp"
+                android:text="All"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                app:cornerRadius="20dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/chart_placeholder_title"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="@string/chart_placeholder_desc"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/cashButtonsContainer"
-            android:layout_width="417dp"
-            android:layout_height="71dp"
-            android:layout_marginTop="480dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/expensesButtonContainer"
-            tools:layout_editor_absoluteX="-9dp">
+            app:layout_constraintBottom_toTopOf="@id/expensesTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <Button
                 android:id="@+id/cashInButton"
@@ -420,16 +223,14 @@
             android:id="@+id/expensesTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/expenses"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.511"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cashButtonsContainer"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -439,6 +240,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header_expenses"
-        app:menu="@menu/menu_expenses_drawer" />
+        app:menu="@menu/menu_expenses_drawer" >
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
